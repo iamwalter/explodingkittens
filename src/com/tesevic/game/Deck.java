@@ -3,18 +3,48 @@ package com.tesevic.game;
 import java.util.*;
 
 public class Deck {
-    private Deque<Card> drawCards = new ArrayDeque<>();
-    private Deque<Card> playCards = new ArrayDeque<>();
+    private List<Card> drawCards = new ArrayList<>();
+    private List<Card> playCards = new ArrayList<>();
 
-    public Deque<Card> getDrawCards() {
+    public Card peekDrawCard() {
+        return drawCards.get(drawCards.size() - 1);
+    }
+
+    public List<Card> peekDrawCards(int amount) {
+        List<Card> peekList = new ArrayList<>();
+
+        for (int i = drawCards.size() - 1; i > drawCards.size() - amount && i > 0; i--) {
+            peekList.add(drawCards.get(i));
+        }
+
+        return peekList;
+    }
+
+    public Card peekPlayCards() {
+        if (playCards.size() == 0)
+            return null;
+        return playCards.get(playCards.size() - 1);
+    }
+
+    public List<Card> peekPlayCards(int amount) {
+        List<Card> peekList = new ArrayList<>();
+
+        for (int i = playCards.size() - 1; i > playCards.size() - amount && i > 0; i--) {
+            peekList.add(playCards.get(i));
+        }
+
+        return peekList;
+    }
+
+    public List<Card> getDrawCards() {
         return drawCards;
     }
 
-    public Deque<Card> getPlayCards() {
+    public List<Card> getPlayCards() {
         return playCards;
     }
 
-    public void setDrawCards(Deque<Card> drawCards) {
+    public void setDrawCards(List<Card> drawCards) {
         this.drawCards = drawCards;
     }
 
@@ -25,43 +55,43 @@ public class Deck {
     }
 
     public void initCards() {
-        ArrayList<Card> cards = new ArrayList<>();
         // 4 exploding kittens, attack, skip, favor, shuffle
         for (int i = 0; i < 4; i++) {
-            cards.add(Card.generateCard(Card.CardType.EXPLODING_KITTEN));
-            cards.add(Card.generateCard(Card.CardType.ATTACK));
-            cards.add(Card.generateCard(Card.CardType.SKIP));
-            cards.add(Card.generateCard(Card.CardType.FAVOR));
-            cards.add(Card.generateCard(Card.CardType.SHUFFLE));
+            drawCards.add(Card.generateCard(Card.CardType.EXPLODING_KITTEN));
+            drawCards.add(Card.generateCard(Card.CardType.ATTACK));
+            drawCards.add(Card.generateCard(Card.CardType.SKIP));
+            drawCards.add(Card.generateCard(Card.CardType.FAVOR));
+            drawCards.add(Card.generateCard(Card.CardType.SHUFFLE));
         }
 
         //5 nopes, 5 seethefuture, 20 cat cards
         for (int i = 0; i < 5; i++) {
-            cards.add(Card.generateCard(Card.CardType.NOPE));
-            cards.add(Card.generateCard(Card.CardType.SEETHEFUTURE));
+            drawCards.add(Card.generateCard(Card.CardType.NOPE));
+            drawCards.add(Card.generateCard(Card.CardType.SEETHEFUTURE));
 
             for (int y = 0; y < 4; y++) {
-                cards.add(Card.generateCard(Card.CardType.CATCARD));
+                drawCards.add(Card.generateCard(Card.CardType.CATCARD));
             }
         }
 
         // 6 defuse
         for (int i = 0; i < 6; i++) {
-            cards.add(Card.generateCard(Card.CardType.DEFUSE));
+            drawCards.add(Card.generateCard(Card.CardType.DEFUSE));
         }
 
-        Collections.shuffle(cards);
-
-        for (Card card : cards) {
-            drawCards.push(card);
-        }
+        Collections.shuffle(drawCards);
     }
 
+    // TODO: Specify the amount of cards peeked.
     public void printRecentlyPlayedCards() {
         System.out.println("--- Recently Played Cards --- ");
 
-        String recentlyPlayedCard = (this.getPlayCards().peek() == null) ? "Nothing Played Yet." : this.getPlayCards().peek().toString();
+        String recentlyPlayedCard = (peekPlayCards() == null) ? "Nothing Played Yet." : peekPlayCards().toString();
 
         System.out.println(recentlyPlayedCard);
+    }
+
+    public Card drawCard() {
+        return drawCards.remove(drawCards.size() - 1);
     }
 }

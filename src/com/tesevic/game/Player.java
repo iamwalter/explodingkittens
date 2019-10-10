@@ -1,5 +1,6 @@
 package com.tesevic.game;
 
+import com.tesevic.interaction.Input;
 import com.tesevic.text.TextHolder;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class Player {
         printCards();
     }
 
-    public void printCards() {
+    private void printCards() {
         int i = 1;
 
         for (Card card : cards) {
