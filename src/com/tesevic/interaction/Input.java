@@ -1,5 +1,7 @@
 package com.tesevic.interaction;
 
+import com.tesevic.text.TextHolder;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -23,6 +25,21 @@ public class Input {
                 System.out.println("Please enter a number.");
                 scanner.nextLine(); // reset to next line.
             }
+        }
+
+        return input;
+    }
+
+    public static int getInput(int min, int max) {
+        boolean valid = false;
+        int input = -1;
+
+        while (!valid) {
+            input = Input.getInput();
+
+            valid = (input >= min && input <= max);
+
+            if (!valid) System.out.println(TextHolder.INPUT_NOT_IN_RANGE);
         }
 
         return input;

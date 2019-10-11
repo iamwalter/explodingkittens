@@ -13,23 +13,24 @@ public class Deck {
     public List<Card> peekDrawCards(int amount) {
         List<Card> peekList = new ArrayList<>();
 
-        for (int i = drawCards.size() - 1; i > drawCards.size() - amount && i > 0; i--) {
+        for (int i = drawCards.size() - 1; i >= drawCards.size() - amount && i >= 0; i--) {
             peekList.add(drawCards.get(i));
         }
 
         return peekList;
     }
 
-    public Card peekPlayCards() {
+    public Card peekPlayCard() {
         if (playCards.size() == 0)
             return null;
+
         return playCards.get(playCards.size() - 1);
     }
 
     public List<Card> peekPlayCards(int amount) {
         List<Card> peekList = new ArrayList<>();
 
-        for (int i = playCards.size() - 1; i > playCards.size() - amount && i > 0; i--) {
+        for (int i = playCards.size() - 1; i >= playCards.size() - amount && i >= 0; i--) {
             peekList.add(playCards.get(i));
         }
 
@@ -43,11 +44,6 @@ public class Deck {
     public List<Card> getPlayCards() {
         return playCards;
     }
-
-    public void setDrawCards(List<Card> drawCards) {
-        this.drawCards = drawCards;
-    }
-
     public void printDrawCards() {
         for (Card c : drawCards) {
             System.out.println(c);
@@ -86,9 +82,17 @@ public class Deck {
     public void printRecentlyPlayedCards() {
         System.out.println("--- Recently Played Cards --- ");
 
-        String recentlyPlayedCard = (peekPlayCards() == null) ? "Nothing Played Yet." : peekPlayCards().toString();
+        List<Card> recentPlayedList;
 
-        System.out.println(recentlyPlayedCard);
+        recentPlayedList = peekPlayCards(3);
+
+        if (recentPlayedList.size() == 0) {
+            System.out.println("No card recently played.");
+        } else {
+           for (Card c : recentPlayedList) {
+                System.out.println(c);
+            }
+        }
     }
 
     public Card drawCard() {

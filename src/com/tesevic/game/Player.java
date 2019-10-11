@@ -54,4 +54,11 @@ public class Player {
             System.out.println(i++ + ": " + card);
         }
     }
+
+    public Card playCard(int i, List<Card> playCards) {
+        Card cardPlayed = cards.get(i);
+        cards.remove(i);
+        playCards.add(cardPlayed);
+        return cardPlayed;
+    }
 }

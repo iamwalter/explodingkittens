@@ -19,27 +19,44 @@ public class Game {
         init();
     }
 
+    private void gameLogic(Player p) {
+        deck.printRecentlyPlayedCards();
+        p.printInfo();
+        System.out.println(TextHolder.CARD_INFO_PLAYING_A_CARD);
+
+        Card lastPlayed = deck.peekPlayCard();
+
+        if (lastPlayed != null) {
+
+            // handle last played card logic, like attack.
+            switch (lastPlayed.getType()) {
+            }
+        }
+
+        int input = Input.getInput(0, p.getCards().size());
+
+        if (input == 0) {
+            // player draw card from deck.
+            // TODO: Handle drawing exploding kitten
+        } else {
+            // player plays a card.
+            p.playCard(input - 1, deck.getPlayCards());
+        }
+
+    }
+
     public void start() {
+        int turn = 1;
+
         while (players.size() > 0) {
+            System.out.println("Turn " + turn++);
+
             for (Player p : players) {
-                deck.printRecentlyPlayedCards();
-                p.printInfo();
-                System.out.println(TextHolder.CARD_INFO_PLAYING_A_CARD);
-
-                int input = Input.getInput();
-
-                if (input == 0) {
-                    // player draw card from deck.
-                } else if (input > p.getCards().size()) {
-                    System.out.println(TextHolder.INPUT_NOT_IN_RANGE);
-                } else {
-                    Card cardPlayed = p.getCards().get(input - 1);
-                    p.getCards().remove(input - 1);
-                    deck.getPlayCards().add(cardPlayed);
-                }
+                gameLogic(p);
             }
         }
     }
+
 
     private void init() {
         // init players
