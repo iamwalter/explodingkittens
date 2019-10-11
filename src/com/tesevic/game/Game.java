@@ -33,9 +33,11 @@ public class Game {
 
         int input = Input.getInput(0, p.getCards().size());
 
+        // Card Drawing Functionality.
         if (input == 0) {
             Card drawCard = deck.drawCard();
 
+            // If draw card is exploding kitten
             if (drawCard.getType() == CardType.EXPLODING_KITTEN) {
                 System.out.println(TextHolder.DRAW_EXPLODING_KITTEN);
 
