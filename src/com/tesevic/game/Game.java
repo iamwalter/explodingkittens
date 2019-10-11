@@ -20,24 +20,38 @@ public class Game {
     }
 
     private void gameLogic(Player p) {
-        deck.printRecentlyPlayedCards();
-        p.printInfo();
-        System.out.println(TextHolder.CARD_INFO_PLAYING_A_CARD);
-
         Card lastPlayed = deck.peekPlayCard();
 
         if (lastPlayed != null) {
-
             // handle last played card logic, like attack.
             switch (lastPlayed.getType()) {
+                case ATTACK:
+                    // force the player to play an attack card
+                    break;
             }
         }
 
         int input = Input.getInput(0, p.getCards().size());
 
         if (input == 0) {
-            // player draw card from deck.
-            // TODO: Handle drawing exploding kitten
+            Card drawCard = deck.drawCard();
+
+            if (drawCard.getType() == CardType.EXPLODING_KITTEN) {
+                System.out.println(TextHolder.DRAW_EXPLODING_KITTEN);
+
+                if (p.removeCard(CardType.DEFUSE) == null) {
+                    System.out.println(TextHolder.NO_DEFUSE_CARDS);
+
+                    p.setDead(true);
+                } else {
+                    // let player put cat card somewhere in deck.
+                    System.out.println(TextHolder.PLACE_EXPLODING_KITTEN_IN_DECK);
+                    System.out.println("TODO: LET PLAYER PUT CAT CARD IN DECK");
+                    deck.getDrawCards().add(drawCard);
+                }
+            } else {
+                p.addCard(drawCard);
+            }
         } else {
             // player plays a card.
             p.playCard(input - 1, deck.getPlayCards());
@@ -46,12 +60,17 @@ public class Game {
     }
 
     public void start() {
-        int turn = 1;
-
         while (players.size() > 0) {
-            System.out.println("Turn " + turn++);
-
             for (Player p : players) {
+                if (p.getDead()) {
+                    System.out.println("player is dead");
+                    continue;
+                }
+
+                deck.printRecentlyPlayedCards();
+                p.printInfo();
+                System.out.println(TextHolder.CARD_INFO_PLAYING_A_CARD);
+
                 gameLogic(p);
             }
         }
@@ -64,7 +83,7 @@ public class Game {
         final int START_CARD_AMOUNT = 8;
 
         for (String name : names) {
-            players.add(new Player(this, name));
+            players.add(new Player(name));
         }
 
         // shuffle the cards to the players
@@ -112,7 +131,7 @@ public class Game {
         }
         int bombs = 0;
 
-        // aseert that there are 4 bombs in the deck.
+        // assert that there are 4 bombs in the deck.
         for (Card c : deck.getDrawCards()) {
             if (c.getType() == CardType.EXPLODING_KITTEN)
                 bombs++;

@@ -9,11 +9,10 @@ import java.util.List;
 public class Player {
     private String name;
     private List<Card> cards = new ArrayList<>();
-    private Game game;
+    private boolean dead = false;
 
-    public Player(Game game, String name) {
+    public Player(String name) {
         this.name = name;
-        this.game = game;
     }
 
     public void addCard(Card card) {
@@ -60,5 +59,13 @@ public class Player {
         cards.remove(i);
         playCards.add(cardPlayed);
         return cardPlayed;
+    }
+
+    public boolean getDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 }
