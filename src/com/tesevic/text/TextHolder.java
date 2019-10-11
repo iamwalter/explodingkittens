@@ -2,6 +2,8 @@ package com.tesevic.text;
 
 public class TextHolder {
 
+    private TextHolder() {}
+
     // MENUS
     public static final String MAIN_MENU = "Hello! Welcome to exploding kittens main menu..\n 1. start game,\n 2. how to play, \n3. exit";
     public static final String HOW_TO_PLAY = "HOWTOPLAY. \nPress 1 to return.";
