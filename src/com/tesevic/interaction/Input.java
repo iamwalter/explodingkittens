@@ -30,6 +30,12 @@ public class Input {
         return input;
     }
 
+    /**
+     * Get input from user with the specified minimum and maximum value.
+     * @param min minimum value
+     * @param max maximum value
+     * @return input, number between (and including) minimum and maximum
+     */
     public static int getInput(int min, int max) {
         boolean valid = false;
         int input = -1;
