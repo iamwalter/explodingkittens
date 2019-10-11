@@ -46,8 +46,11 @@ public class Game {
                 } else {
                     // let player put cat card somewhere in deck.
                     System.out.println(TextHolder.PLACE_EXPLODING_KITTEN_IN_DECK);
-                    System.out.println("TODO: LET PLAYER PUT CAT CARD IN DECK");
-                    deck.getDrawCards().add(drawCard);
+
+                    int cardPosition = Input.getInput(1, deck.getDrawCards().size());
+                    cardPosition = deck.getDrawCards().size() - cardPosition - 1;
+
+                    deck.getDrawCards().add(cardPosition, drawCard);
                 }
             } else {
                 p.addCard(drawCard);
@@ -56,14 +59,18 @@ public class Game {
             // player plays a card.
             p.playCard(input - 1, deck.getPlayCards());
         }
-
     }
 
     public void start() {
-        while (players.size() > 0) {
+        int deadplayers = 0;
+
+        while (true) {
+            if (deadplayers == players.size() - 1) {
+                break;
+            }
             for (Player p : players) {
                 if (p.getDead()) {
-                    System.out.println("player is dead");
+                    deadplayers++;
                     continue;
                 }
 
@@ -74,6 +81,8 @@ public class Game {
                 gameLogic(p);
             }
         }
+
+        System.out.println("game is over. thanks for playing.");
     }
 
 
