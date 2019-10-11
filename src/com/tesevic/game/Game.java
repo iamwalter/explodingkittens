@@ -64,15 +64,19 @@ public class Game {
     }
 
     public void start() {
-        int deadplayers = 0;
+        // Keep track of the dead players.
+        int deadPlayers = 0;
 
         while (true) {
-            if (deadplayers == players.size() - 1) {
+            if (deadPlayers == players.size() - 1) {
                 break;
             }
+
+            deadPlayers = 0;
+
             for (Player p : players) {
                 if (p.getDead()) {
-                    deadplayers++;
+                    deadPlayers++;
                     continue;
                 }
 
