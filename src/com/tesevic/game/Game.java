@@ -70,14 +70,10 @@ public class Game {
                 playerDone = true;
             } else {
                 // player plays a card. card must not be of type defuse card
-                if (p.getCard(input - 1).getType() != CardType.DEFUSE) {
-                    Card playCard = p.playCard(input - 1, deck.getPlayCards());
+                Card playCard = p.playCard(input - 1, deck.getPlayCards());
 
-                    if (playCard != null)
-                        playerDone = handleCardPlayed(playCard);
-                } else {
-                    System.out.println(TextHolder.PLAY_DEFUSE_CARD);
-                }
+                if (playCard != null)
+                    playerDone = handleCardPlayed(playCard);
             }
         }
     }

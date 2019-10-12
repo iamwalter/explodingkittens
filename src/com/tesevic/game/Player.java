@@ -76,15 +76,21 @@ public class Player {
             // check if player has 2 cat cards
              for (Card c : cards) {
                  if (c.getType() == Card.CardType.CATCARD) {
-                     cards.remove(c);
+                    cards.remove(c);
                     return cardPlayed;
                  }
              }
 
             // if end of the for loop reached without finding another cat card
             // return original card to deck and return null
+            System.out.println(TextHolder.NOT_ENOUGH_CAT_CARDS);
+            cards.add(i, cardPlayed);
+            return null;
+        }
 
-            System.out.println("You need 2 cat cards to play this. ");
+        // Cannot play card of type defuse.
+        if (cardPlayed.getType() == Card.CardType.DEFUSE) {
+            System.out.println(TextHolder.PLAY_DEFUSE_CARD);
             cards.add(i, cardPlayed);
             return null;
         }
