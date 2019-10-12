@@ -40,6 +40,10 @@ public class Player {
         return cards;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void printInfo() {
         System.out.println("---- " + this.name + "'s Hand ----");
 
@@ -52,6 +56,10 @@ public class Player {
         for (Card card : cards) {
             System.out.println(i++ + ": " + card);
         }
+    }
+
+    public Card getCard(int i) {
+        return cards.get(i);
     }
 
     public Card playCard(int i, List<Card> playCards) {

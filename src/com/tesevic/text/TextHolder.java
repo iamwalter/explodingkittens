@@ -27,4 +27,5 @@ public class TextHolder {
     public static final String DRAW_EXPLODING_KITTEN = "You drew an exploding kitten card! You will now have to play a defuse card.";
     public static final String NO_DEFUSE_CARDS = "You don't have a defuse card! DEAD!";
     public static final String PLACE_EXPLODING_KITTEN_IN_DECK = "You can now put the Exploding Cat card in te deck.\nPress 1 to put it in the top card andsoforth.";
+    public static final String PLAY_DEFUSE_CARD = "You cannot play a defuse card on it's own like that...";
 }

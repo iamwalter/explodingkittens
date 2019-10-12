@@ -3,6 +3,7 @@ package com.tesevic.game;
 import com.tesevic.interaction.Input;
 import com.tesevic.text.TextHolder;
 
+import javax.smartcardio.ATR;
 import java.util.*;
 
 import static com.tesevic.game.Card.*;
@@ -24,71 +25,124 @@ public class Game {
 
         if (lastPlayed != null) {
             // handle last played card logic, like attack.
-            switch (lastPlayed.getType()) {
-                case ATTACK:
-                    // force the player to play an attack card
-                    break;
+            if (lastPlayed.getType() == CardType.ATTACK) {
+                //do something
             }
         }
 
-        int input = Input.getInput(0, p.getCards().size());
+        boolean playerDone = false;
 
-        // Card Drawing Functionality.
-        if (input == 0) {
-            Card drawCard = deck.drawCard();
+        while (!playerDone) {
+            p.printInfo();
+            System.out.println(TextHolder.CARD_INFO_PLAYING_A_CARD);
 
-            // If draw card is exploding kitten
-            if (drawCard.getType() == CardType.EXPLODING_KITTEN) {
-                System.out.println(TextHolder.DRAW_EXPLODING_KITTEN);
+            int input = Input.getInput(0, p.getCards().size());
 
-                if (p.removeCard(CardType.DEFUSE) == null) {
-                    System.out.println(TextHolder.NO_DEFUSE_CARDS);
+            // Card Drawing Functionality.
+            if (input == 0) {
+                Card drawCard = deck.drawCard();
 
-                    p.setDead(true);
+                // If draw card is exploding kitten
+                if (drawCard.getType() == CardType.EXPLODING_KITTEN) {
+                    System.out.println(TextHolder.DRAW_EXPLODING_KITTEN);
+
+                    if (p.removeCard(CardType.DEFUSE) == null) {
+                        System.out.println(TextHolder.NO_DEFUSE_CARDS);
+
+                        p.setDead(true);
+                        deck.getPlayCards().add(drawCard);
+                    } else {
+                        // let player put cat card somewhere in deck.
+                        System.out.println(TextHolder.PLACE_EXPLODING_KITTEN_IN_DECK);
+
+                        // TODO: There is a bug in the placing of a cat card..
+                        int cardPosition = Input.getInput(1, deck.getDrawCards().size()) - 1;
+                        cardPosition = deck.getDrawCards().size() - cardPosition;
+
+                        deck.getDrawCards().add(cardPosition, drawCard);
+                    }
                 } else {
-                    // let player put cat card somewhere in deck.
-                    System.out.println(TextHolder.PLACE_EXPLODING_KITTEN_IN_DECK);
 
-                    int cardPosition = Input.getInput(1, deck.getDrawCards().size());
-                    cardPosition = deck.getDrawCards().size() - cardPosition - 1;
+                    System.out.println("You drew a " + drawCard.getType() + " card.");
 
-                    deck.getDrawCards().add(cardPosition, drawCard);
+                    p.addCard(drawCard);
                 }
+
+                playerDone = true;
             } else {
-                p.addCard(drawCard);
+                // player plays a card. card must not be of type defuse card
+                if (p.getCard(input - 1).getType() != CardType.DEFUSE) {
+                    Card playCard = p.playCard(input - 1, deck.getPlayCards());
+
+                    playerDone = handleCardPlayed(playCard);
+                } else {
+                    System.out.println(TextHolder.PLAY_DEFUSE_CARD);
+                }
             }
-        } else {
-            // player plays a card.
-            p.playCard(input - 1, deck.getPlayCards());
         }
     }
 
-    public void start() {
-        // Keep track of the dead players.
-        int deadPlayers = 0;
+    private boolean handleCardPlayed(Card playCard) {
+        switch (playCard.getType()) {
+            case ATTACK:
+            case SKIP:
+            case NOPE:
+                return true;
+            case SHUFFLE:
+                Collections.shuffle(deck.getDrawCards());
+                return false;
+            case SEETHEFUTURE:
+                System.out.println("Cards ahead: ");
+                for (Card c : deck.peekDrawCards(3))
+                    System.out.println("\t- " + c);
 
-        while (true) {
-            if (deadPlayers == players.size() - 1) {
-                break;
-            }
+                return false;
+            case FAVOR:
+            case CATCARD:
+                System.out.println("TODO: Handle card stealing...");
+                return false;
+            case DEFUSE:
+                System.out.println("You cannot play defuse cards!");
+                return false;
+        }
 
-            deadPlayers = 0;
+        return false;
+    }
 
-            for (Player p : players) {
-                if (p.getDead()) {
-                    deadPlayers++;
-                    continue;
-                }
+    // Check if there is a winner in the game.
+    private boolean checkIsAWinner() {
+        List<Player> deadPlayers = new ArrayList<>();
 
-                deck.printRecentlyPlayedCards();
-                p.printInfo();
-                System.out.println(TextHolder.CARD_INFO_PLAYING_A_CARD);
-
-                gameLogic(p);
+        for (Player p : players) {
+            if (p.getDead()) {
+                deadPlayers.add(p);
             }
         }
 
-        System.out.println("game is over. thanks for playing.");
+        return deadPlayers.size() == players.size() - 1;
+    }
+
+    public void start() {
+        // Keep track of the last players played.
+        Player lastPlayer = new Player("UNKNOWN");
+
+        while (!checkIsAWinner()) {
+            for (Player p : players) {
+                if (checkIsAWinner()) {
+                    // If there is a winner, don't ask input for the next turn.
+                    break;
+                }
+
+                // Only ask for input if a player is not dead.
+                if (!p.getDead()) {
+                    deck.printRecentlyPlayedCards();
+                    gameLogic(p);
+                    lastPlayer = p;
+                }
+            }
+        }
+
+        System.out.println("game is over. " + lastPlayer.getName() + " won");
     }
 
 
@@ -127,8 +181,7 @@ public class Game {
 
                 p.addCard(deck.drawCard());
 
-                // shuffle the cards again, by making an arraylist of the cards
-                // and shuffling, adding back to queue after. TODO: Optimize this!
+                // If exploding kitten is detected shuffle the cards again.
                 if (cardsDrawn.size() > 0) {
                     deck.getDrawCards().addAll(cardsDrawn);
 
@@ -138,7 +191,6 @@ public class Game {
         }
 
         // assert that none of the players have a exploding card
-
         for (Player p : players) {
             for (Card c : p.getCards()) {
                 assert c.getType() != CardType.EXPLODING_KITTEN;
