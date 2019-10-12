@@ -62,7 +62,6 @@ public class Game {
                         deck.getDrawCards().add(cardPosition, drawCard);
                     }
                 } else {
-
                     System.out.println("You drew a " + drawCard.getType() + " card.");
 
                     p.addCard(drawCard);
@@ -74,7 +73,8 @@ public class Game {
                 if (p.getCard(input - 1).getType() != CardType.DEFUSE) {
                     Card playCard = p.playCard(input - 1, deck.getPlayCards());
 
-                    playerDone = handleCardPlayed(playCard);
+                    if (playCard != null)
+                        playerDone = handleCardPlayed(playCard);
                 } else {
                     System.out.println(TextHolder.PLAY_DEFUSE_CARD);
                 }
@@ -99,6 +99,7 @@ public class Game {
                 return false;
             case FAVOR:
             case CATCARD:
+
                 System.out.println("TODO: Handle card stealing...");
                 return false;
             case DEFUSE:

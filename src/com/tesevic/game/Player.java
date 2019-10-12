@@ -62,9 +62,33 @@ public class Player {
         return cards.get(i);
     }
 
+    /**
+     *
+     * @param i index of the card
+     * @param playCards deck of playcards
+     * @return the card that has been played, or null if card cannot be played
+     */
     public Card playCard(int i, List<Card> playCards) {
         Card cardPlayed = cards.get(i);
         cards.remove(i);
+
+        if (cardPlayed.getType() == Card.CardType.CATCARD) {
+            // check if player has 2 cat cards
+             for (Card c : cards) {
+                 if (c.getType() == Card.CardType.CATCARD) {
+                     cards.remove(c);
+                    return cardPlayed;
+                 }
+             }
+
+            // if end of the for loop reached without finding another cat card
+            // return original card to deck and return null
+
+            System.out.println("You need 2 cat cards to play this. ");
+            cards.add(i, cardPlayed);
+            return null;
+        }
+
         playCards.add(cardPlayed);
         return cardPlayed;
     }
