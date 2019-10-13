@@ -73,12 +73,12 @@ public class Game {
                 Card playCard = p.playCard(input - 1, deck.getPlayCards());
 
                 if (playCard != null)
-                    playerDone = handleCardPlayed(playCard);
+                    playerDone = handleCardPlayed(playCard, p);
             }
         }
     }
 
-    private boolean handleCardPlayed(Card playCard) {
+    private boolean handleCardPlayed(Card playCard, Player p) {
         switch (playCard.getType()) {
             case ATTACK:
             case SKIP:
@@ -94,16 +94,72 @@ public class Game {
 
                 return false;
             case FAVOR:
+                handleCardStealing(p, false);
+                break;
             case CATCARD:
-
-                System.out.println("TODO: Handle card stealing...");
+                handleCardStealing(p, true);
                 return false;
             case DEFUSE:
-                System.out.println("You cannot play defuse cards!");
+                System.out.println(TextHolder.PLAY_DEFUSE_CARD);
                 return false;
         }
 
         return false;
+    }
+
+    // choice is whether player has a choice in the card he is stealing.
+    private void handleCardStealing(Player player, boolean choice) {
+        // Get player to steal from
+        System.out.println("Steal a card from player? ");
+
+        ArrayList<Player> availablePlayers = new ArrayList<>();
+
+        int index = 1;
+        for (Player p : players) {
+            if (p != player && (!p.getDead())) {
+                availablePlayers.add(p);
+
+                System.out.println(index++ + " - " + p.getName());
+            }
+        }
+
+        int input = Input.getInput(1, availablePlayers.size());
+        Player chosenPlayer = availablePlayers.get(input - 1);
+
+        if (chosenPlayer.getCards().size() == 1) {
+            System.out.println("Stealing the only card " + chosenPlayer.getName() + " has.");
+        } else if (chosenPlayer.getCards().size() == 0) {
+            System.out.println(chosenPlayer.getName() + " has no cards!");
+        } else {
+            // if player has a choice (catcard)
+            if (choice) {
+                System.out.println("Steal card 1 to " + chosenPlayer.getCards().size());
+
+                input = Input.getInput(1, chosenPlayer.getCards().size());
+
+                Card c = chosenPlayer.getCard(input - 1);
+                chosenPlayer.getCards().remove(c);
+                player.addCard(c);
+
+                System.out.println("Stole a " + c.getType());
+            } else {
+                // if player has no choice (favor)
+                // use random card for now?
+                Random r = new Random();
+
+                int cardIndex = r.nextInt(chosenPlayer.getCards().size());
+
+                Card c = chosenPlayer.getCard(cardIndex);
+                chosenPlayer.getCards().remove(c);
+                player.addCard(c);
+
+                System.out.println("Stole a " + c.getType());
+            }
+        }
+
+
+
+        System.out.println("");
     }
 
     // Check if there is a winner in the game.
