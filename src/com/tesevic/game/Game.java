@@ -114,18 +114,20 @@ public class Game {
 
         ArrayList<Player> availablePlayers = new ArrayList<>();
 
-        int index = 1;
+        int counter = 1;
         for (Player p : players) {
+            // if player is not the current player, and other player is not dead.
             if (p != player && (!p.getDead())) {
                 availablePlayers.add(p);
 
-                System.out.println(index++ + " - " + p.getName());
+                System.out.println(counter++ + " - " + p.getName());
             }
         }
 
         int input = Input.getInput(1, availablePlayers.size());
         Player chosenPlayer = availablePlayers.get(input - 1);
 
+        // If player has only one card.
         if (chosenPlayer.getCards().size() == 1) {
             System.out.println("Stealing the only card " + chosenPlayer.getName() + " has.");
         } else if (chosenPlayer.getCards().size() == 0) {
@@ -156,10 +158,6 @@ public class Game {
                 System.out.println("Stole a " + c.getType());
             }
         }
-
-
-
-        System.out.println("");
     }
 
     // Check if there is a winner in the game.
